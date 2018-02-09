@@ -27,7 +27,7 @@ public class Launcher {
         if (args.length < 2 || args[0].equals("--help")) {
             System.out.println("Overload with up to 2 arguments. \nThe first determines the amount of digits to be calculated" +
                     "\nThe second determens the alphabet that will be used:" +
-                    "\n     dig     => all digits vom 0-9" +
+                    "\n     dig     => all digits from 0 to 9" +
                     "\n     low     => all lower letters" +
                     "\n     up      => all capital letters" +
                     "\n     letter  => all letters" +
