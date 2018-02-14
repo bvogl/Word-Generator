@@ -59,20 +59,27 @@ public class Launcher {
             long timeStart = System.currentTimeMillis();
 
             SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
-            //calculator.calculateInASingleThread(_Word, _Alphabet);
+            calculator.calculateInASingleThread(_Word, _Alphabet);
 
             long timeEnd = System.currentTimeMillis();
             long resultTime = timeEnd - timeStart;
             System.out.println("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
 
+            String resultFilePath = new File("").getAbsolutePath();
+            resultFilePath = resultFilePath.concat("/resultMain.txt");
+
+            FileWriterHelper fwh = new FileWriterHelper();
+
+            fwh.writeResultToFile(resultFilePath, calculator.ResultStringList, false);
+
             String filePath = new File("").getAbsolutePath();
             filePath = filePath.concat("/times.txt");
 
-            writeTimeToFile(filePath, "\nThe Calculation took the main Thread: " + resultTime / 1000 + "s (" + resultTime + "ms)");
+            fwh.writeTimeToFile(filePath, "\nThe Calculation took the main Thread: " + resultTime / 1000 + "s (" + resultTime + "ms)", true);
 
 
             // Mehrere Threads
-            MultiThreadCalculator multiCalc = new MultiThreadCalculator(3, _Word, _Alphabet);
+            MultiThreadCalculator multiCalc = new MultiThreadCalculator(1, _Word, _Alphabet);
             //multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
 
             multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
@@ -80,22 +87,6 @@ public class Launcher {
         }
     }
 
-    public static void writeTimeToFile(String fileName, String result) {
-
-        BufferedWriter output = null;
-
-        File file = new File(fileName);
-
-        try {
-            output = new BufferedWriter(new FileWriter(file, true));
-
-            output.write("\n" + result);
-
-            output.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
 
 }

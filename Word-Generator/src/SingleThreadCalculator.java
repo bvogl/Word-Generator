@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 
 public class SingleThreadCalculator {
 
-    private static int _MaxLength;
-    private static String _Word;
+    private int _MaxLength;
+    private String _Word;
+    public ArrayList<String> ResultStringList;
 
     /**
      * Standard Constructor
@@ -12,6 +14,7 @@ public class SingleThreadCalculator {
     public SingleThreadCalculator(int maxLength) {
 
         _MaxLength = maxLength;
+        ResultStringList = new ArrayList<String>();
     }
 
     /**
@@ -25,7 +28,9 @@ public class SingleThreadCalculator {
         if (word.length() >= _MaxLength) {
 
             //System.out.print(word + "\r");
-            System.out.println(word + Thread.currentThread() + "\r");
+            //System.out.println(word + Thread.currentThread() + "\r");
+
+            ResultStringList.add(word);
 
             return;
         }

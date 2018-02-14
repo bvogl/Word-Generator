@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListCalculatorThread extends Thread {
@@ -9,12 +10,18 @@ public class ListCalculatorThread extends Thread {
     private String _Word;
     private List<String> _WordList;
     private Alphabet _Alphabet;
+    private String _ResultString;
+    private ArrayList<String> _ResultStringList;
+    private int _Id;
 
-    public ListCalculatorThread(int maxLength, Alphabet alphabet, List<String> wordList) {
+    public ListCalculatorThread(int maxLength, Alphabet alphabet, List<String> wordList, int id) {
 
         _MaxLength = maxLength;
         _WordList = wordList;
         _Alphabet = alphabet;
+        _ResultString = "";
+        _Id = id;
+        _ResultStringList = new ArrayList<String>();
     }
 
     @Override
@@ -36,17 +43,31 @@ public class ListCalculatorThread extends Thread {
         outputString = outputString.concat("Thread: " + Thread.currentThread().getName());
         outputString = outputString.concat("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
 
-        String filePath = new File("").getAbsolutePath();
-        filePath = filePath.concat("/times.txt");
+        String timesfilePath = new File("").getAbsolutePath();
+        timesfilePath = timesfilePath.concat("/times.txt");
 
-        writeTimeToFile(filePath, outputString);
+        System.out.println(outputString);
+
+        String resultFilePath = new File("").getAbsolutePath();
+        resultFilePath = resultFilePath.concat("/result" + _Id + ".txt");
+
+        FileWriterHelper fwh = new FileWriterHelper();
+
+        fwh.writeResultToFile(resultFilePath, _ResultStringList, false);
+
+        fwh.writeTimeToFile(timesfilePath, outputString, true);
 
     }
 
     private void calculate(String word, Alphabet alphabet) {
 
         if (word.length() >= _MaxLength) {
-            System.out.println(word + " " + Thread.currentThread() + "\r");
+            //System.out.println(word + " " + Thread.currentThread() + "\r");
+
+            //_ResultString = _ResultString.concat(word + "\n");
+
+            _ResultStringList.add(word);
+
             return;
         }
 
@@ -57,14 +78,14 @@ public class ListCalculatorThread extends Thread {
         }
     }
 
-    private static void writeTimeToFile(String fileName, String result) {
+    private static void writeTimeToFile(String fileName, String result, boolean append) {
 
         BufferedWriter output = null;
 
         File file = new File(fileName);
 
         try {
-            output = new BufferedWriter(new FileWriter(file, true));
+            output = new BufferedWriter(new FileWriter(file, append));
 
             output.write("\n" + result);
 

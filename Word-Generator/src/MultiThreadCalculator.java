@@ -46,19 +46,44 @@ public class MultiThreadCalculator {
             counter = counter + partialListSize;
         }
 
+        List<String> restList = new ArrayList<String>();
+
+
         try {
-            lists.add(_WordsList.subList(tmp, _WordsList.size()));
+            //lists.add(_WordsList.subList(tmp, _WordsList.size()));
+            restList = _WordsList.subList(tmp, _WordsList.size());
+
         } catch (IndexOutOfBoundsException ex) {
             ex.printStackTrace();
         } finally {
 
-            for (List<String> list : lists
-                    ) {
+            ArrayList<List<String>> newLIst = new ArrayList<List<String>>();
 
-                ListCalculatorThread t = new ListCalculatorThread(maxLength, alphabet, list);
-                t.start();
+                for (int i = 0; i < lists.size(); i++) {
+
+                    ArrayList lst = new ArrayList(lists.get(i));
+
+                    try {
+
+                        lst.add(restList.get(i));
+                    } catch (IndexOutOfBoundsException ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        //lists.get(i).add(restList.get(i));
+                        newLIst.add(lst);
+                    }
+                }
+
+                int count = 0;
+                for (List<String> list : newLIst
+                        ) {
+
+                    ListCalculatorThread t = new ListCalculatorThread(maxLength, alphabet, list, count);
+                    t.start();
+                    count++;
+                }
             }
-        }
+
     }
 
     public void doWorkWithThreadsafeInteger(int maxLength, Alphabet alphabet) {
@@ -76,7 +101,6 @@ public class MultiThreadCalculator {
     private void calculateWordsList(String word, Alphabet alphabet, int maxLength) {
 
         if (word.length() >= maxLength) {
-            System.out.println(word + " " + Thread.currentThread());
             _WordsList.add(word);
 
             return;
