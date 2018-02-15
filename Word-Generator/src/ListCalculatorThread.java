@@ -36,27 +36,30 @@ public class ListCalculatorThread extends Thread {
             calculate(word, _Alphabet);
         }
 
-        long timeEnd = System.currentTimeMillis();
-        long resultTime = timeEnd - timeStart;
-
-        String outputString = "";
-        outputString = outputString.concat("Thread: " + Thread.currentThread().getName());
-        outputString = outputString.concat("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
-
-        String timesfilePath = new File("").getAbsolutePath();
-        timesfilePath = timesfilePath.concat("/times.txt");
-
-        System.out.println(outputString);
-
+        // In Zeitmessung wird einbezogen:
+        // Das Schreiben der Werte in die Datei
         String resultFilePath = new File("").getAbsolutePath();
         resultFilePath = resultFilePath.concat("/result" + _Id + ".txt");
 
         FileWriterHelper fwh = new FileWriterHelper();
-
         fwh.writeResultToFile(resultFilePath, _ResultStringList, false);
 
-        fwh.writeTimeToFile(timesfilePath, outputString, true);
+        long timeEnd = System.currentTimeMillis();
+        long resultTime = timeEnd - timeStart;
 
+        // Nicht in die Zeitmessung einbezogen wird:
+        // Das Schreiben der Zeit auf der Konsole,
+        // Das Schreiben der Zeit in die Datei
+        String outputString = "";
+        outputString = outputString.concat("Thread: " + Thread.currentThread().getName());
+        outputString = outputString.concat("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
+
+        String timesFilePath = new File("").getAbsolutePath();
+        timesFilePath = timesFilePath.concat("/times.txt");
+
+        System.out.println(outputString);
+
+        fwh.writeTimeToFile(timesFilePath, outputString, true);
     }
 
     private void calculate(String word, Alphabet alphabet) {

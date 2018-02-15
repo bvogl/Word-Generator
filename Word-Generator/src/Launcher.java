@@ -54,39 +54,44 @@ public class Launcher {
                 _Alphabet.SetAlphabetToAll();
             }
 
-
-            // Calculation in a single Thread
-            long timeStart = System.currentTimeMillis();
-
-            SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
-            calculator.calculateInASingleThread(_Word, _Alphabet);
-
-            long timeEnd = System.currentTimeMillis();
-            long resultTime = timeEnd - timeStart;
-            System.out.println("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
-
-            String resultFilePath = new File("").getAbsolutePath();
-            resultFilePath = resultFilePath.concat("/resultMain.txt");
-
-            FileWriterHelper fwh = new FileWriterHelper();
-
-            fwh.writeResultToFile(resultFilePath, calculator.ResultStringList, false);
-
-            String filePath = new File("").getAbsolutePath();
-            filePath = filePath.concat("/times.txt");
-
-            fwh.writeTimeToFile(filePath, "\nThe Calculation took the main Thread: " + resultTime / 1000 + "s (" + resultTime + "ms)", true);
-
+            System.out.println("Neue Runde");
+            int threadsCount = 8;
 
             // Mehrere Threads
-            MultiThreadCalculator multiCalc = new MultiThreadCalculator(1, _Word, _Alphabet);
+            MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
             //multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
 
             multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
-
         }
     }
 
+    private void SingleThread() {
 
+        // Calculation in a single Thread
+        long timeStart = System.currentTimeMillis();
 
+        SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
+        //calculator.calculateInASingleThread(_Word, _Alphabet);
+
+        String resultFilePath = new File("").getAbsolutePath();
+        resultFilePath = resultFilePath.concat("/resultMain.txt");
+
+        FileWriterHelper fwh = new FileWriterHelper();
+        fwh.writeResultToFile(resultFilePath, calculator.ResultStringList, false);
+
+        // Teil der Zeitmessung ist das Schreiben des Ergebnisses in die Datei
+        long timeEnd = System.currentTimeMillis();
+        long resultTime = timeEnd - timeStart;
+
+        // Nicht in die Zeitmessung einbezogen wird:
+        // Das Schreiben der Zeit auf der Konsole,
+        // Das Schreiben der Zeit in die Datei
+        System.out.println(Thread.currentThread().toString());
+        System.out.println("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
+
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.concat("/times.txt");
+
+        fwh.writeTimeToFile(filePath, "\nThe Calculation took the main Thread: " + resultTime / 1000 + "s (" + resultTime + "ms)", true);
+    }
 }

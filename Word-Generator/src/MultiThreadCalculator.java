@@ -23,6 +23,7 @@ public class MultiThreadCalculator {
             max = 1;
         }
 
+        max = 2;
         calculateWordsList(word, alphabet, max);
     }
 
@@ -112,6 +113,4 @@ public class MultiThreadCalculator {
             calculateWordsList(_Word, alphabet, maxLength);
         }
     }
-
-
 }
