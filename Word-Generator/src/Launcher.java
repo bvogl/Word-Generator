@@ -54,8 +54,16 @@ public class Launcher {
                 _Alphabet.SetAlphabetToAll();
             }
 
-            System.out.println("Neue Runde");
-            int threadsCount = 8;
+
+            int threadsCount = 4;
+
+            FileWriterHelper fwh = new FileWriterHelper();
+            String filePath = new File("").getAbsolutePath();
+            filePath = filePath.concat("/times.txt");
+
+            fwh.writeTimeToFile(filePath, "\nNew Round using " + threadsCount + " Threads", true);
+
+            System.out.println("New Round");
 
             // Mehrere Threads
             MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);

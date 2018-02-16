@@ -68,7 +68,7 @@ public class MultiThreadCalculator {
 
                         lst.add(restList.get(i));
                     } catch (IndexOutOfBoundsException ex) {
-                        ex.printStackTrace();
+                        //ex.printStackTrace();
                     } finally {
                         //lists.get(i).add(restList.get(i));
                         newLIst.add(lst);
@@ -81,6 +81,7 @@ public class MultiThreadCalculator {
 
                     ListCalculatorThread t = new ListCalculatorThread(maxLength, alphabet, list, count);
                     t.start();
+                    System.out.println("Thread: " + count + " started");
                     count++;
                 }
             }
