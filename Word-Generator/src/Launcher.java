@@ -55,31 +55,33 @@ public class Launcher {
             }
 
 
-            int threadsCount = 4;
+            SingleThread();
 
-            FileWriterHelper fwh = new FileWriterHelper();
-            String filePath = new File("").getAbsolutePath();
-            filePath = filePath.concat("/times.txt");
-
-            fwh.writeTimeToFile(filePath, "\nNew Round using " + threadsCount + " Threads", true);
-
-            System.out.println("New Round");
-
-            // Mehrere Threads
-            MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
-            //multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
-
-            multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
+//            int threadsCount = 4;
+//
+//            FileWriterHelper fwh = new FileWriterHelper();
+//            String filePath = new File("").getAbsolutePath();
+//            filePath = filePath.concat("/times.txt");
+//
+//            fwh.writeTimeToFile(filePath, "\nNew Round using " + threadsCount + " Threads", true);
+//
+//            System.out.println("New Round");
+//
+//            // Mehrere Threads
+//            MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
+//            //multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
+//
+//            multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
         }
     }
 
-    private void SingleThread() {
+    private static void SingleThread() {
 
         // Calculation in a single Thread
         long timeStart = System.currentTimeMillis();
 
         SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
-        //calculator.calculateInASingleThread(_Word, _Alphabet);
+        calculator.calculateInASingleThread(_Word, _Alphabet);
 
         String resultFilePath = new File("").getAbsolutePath();
         resultFilePath = resultFilePath.concat("/resultMain.txt");

@@ -47,24 +47,20 @@ public class ListCalculatorThread extends Thread {
         long resultTimeCalculationEnd = timeCalculationEnd - timeStart;
 
 
-        //fwh.writeResultToFile(resultFilePath, _ResultStringList, false);
+        fwh.writeResultToFile(resultFilePath, _ResultStringList, false);
 
         long timeTotalEnd = System.currentTimeMillis();
         long resultTimeTotalEnd = timeTotalEnd - timeStart;
 
-        // Nicht in die Zeitmessung einbezogen wird:
-        // Das Schreiben der Zeit auf der Konsole,
-        // Das Schreiben der Zeit in die Datei
         String outputString = "";
-        outputString = outputString.concat("Thread: " + Thread.currentThread().getName());
-        outputString = outputString.concat("\nThe Calculation took: " + resultTimeTotalEnd / 1000 + "s (" + resultTimeTotalEnd + "ms)");
+        outputString = outputString.concat("The whole Operation including writing to Filesystem took in " + Thread.currentThread().getName() + ": " + resultTimeTotalEnd / 1000 + "s (" + resultTimeTotalEnd + "ms)\n");
 
         String timesFilePath = new File("").getAbsolutePath();
         timesFilePath = timesFilePath.concat("/times.txt");
 
         System.out.println(outputString);
 
-        fwh.writeTimeToFile(timesFilePath, "Time without Writing: " + resultTimeCalculationEnd + "ms", true);
+        fwh.writeTimeToFile(timesFilePath, "Calculation without Writing to the Filesystem in " + Thread.currentThread().getName() + " took: " + resultTimeCalculationEnd + "ms", true);
 
         fwh.writeTimeToFile(timesFilePath, outputString, true);
     }
