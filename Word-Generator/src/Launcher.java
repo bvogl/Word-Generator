@@ -54,54 +54,71 @@ public class Launcher {
                 _Alphabet.SetAlphabetToAll();
             }
 
+            int threadsCount = 0;
 
-            SingleThread();
+            if (args.length > 3) {
+                threadsCount = Integer.parseInt(args[3]);
+            }
 
-//            int threadsCount = 4;
-//
-//            FileWriterHelper fwh = new FileWriterHelper();
-//            String filePath = new File("").getAbsolutePath();
-//            filePath = filePath.concat("/times.txt");
-//
-//            fwh.writeTimeToFile(filePath, "\nNew Round using " + threadsCount + " Threads", true);
-//
-//            System.out.println("New Round");
-//
-//            // Mehrere Threads
-//            MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
-//            //multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
-//
-//            multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
+            MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
+
+            if (args[2].equals("single")) {
+                SingleThread();
+            } else if (args[2].equals("list")) {
+                multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
+            } else if (args[2].equals("int")) {
+                multiCalc.doWorkWithThreadsafeInteger(_MaxLength, _Alphabet);
+            }
         }
     }
 
     private static void SingleThread() {
 
-        // Calculation in a single Thread
-        long timeStart = System.currentTimeMillis();
-
+        // set up the environment
         SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
-        calculator.calculateInASingleThread(_Word, _Alphabet);
 
         String resultFilePath = new File("").getAbsolutePath();
         resultFilePath = resultFilePath.concat("/resultMain.txt");
 
-        FileWriterHelper fwh = new FileWriterHelper();
-        fwh.writeResultToFile(resultFilePath, calculator.ResultStringList, false);
+        String timeFilePath = new File("").getAbsolutePath();
+        timeFilePath = timeFilePath.concat("/times.txt");
 
-        // Teil der Zeitmessung ist das Schreiben des Ergebnisses in die Datei
+        FileWriterHelper fwh = new FileWriterHelper();
+
+        // start time taking
+        long timeStart = System.currentTimeMillis();
+
+        // start calculation
+        calculator.calculateInASingleThread(_Word, _Alphabet);
+
+        // end time taking for calculation
         long timeEnd = System.currentTimeMillis();
         long resultTime = timeEnd - timeStart;
 
-        // Nicht in die Zeitmessung einbezogen wird:
-        // Das Schreiben der Zeit auf der Konsole,
-        // Das Schreiben der Zeit in die Datei
-        System.out.println(Thread.currentThread().toString());
-        System.out.println("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
+        String text = "\n" + Thread.currentThread().toString() +
+                "\nSingle Thread (no writing): \t" + resultTime + "ms";
+        System.out.println(text);
 
-        String filePath = new File("").getAbsolutePath();
-        filePath = filePath.concat("/times.txt");
+        fwh.writeTimeToFile(timeFilePath, text, true);
 
-        fwh.writeTimeToFile(filePath, "\nThe Calculation took the main Thread: " + resultTime / 1000 + "s (" + resultTime + "ms)", true);
+        fwh.writeResultToFile(resultFilePath, calculator.ResultStringList, false);
+
+        // new time for writing to file
+        timeEnd = System.currentTimeMillis();
+        long totalResultTime = timeEnd - timeStart;
+
+        text = "Single Thread (with writing): \t" + totalResultTime + "ms";
+        System.out.println(text);
+
+        fwh.writeTimeToFile(timeFilePath, text, true);
+
+        text = "Writing Time: \t\t\t\t\t" + (totalResultTime - resultTime) + "ms" +
+                "\n========================================";
+
+        System.out.println(text);
+        fwh.writeTimeToFile(timeFilePath, text, true);
+
+        fwh = null;
+        calculator = null;
     }
 }

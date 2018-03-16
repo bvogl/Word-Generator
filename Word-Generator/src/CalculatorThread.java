@@ -11,13 +11,17 @@ public class CalculatorThread extends Thread {
     private ArrayList<String> _WordList;
     private Alphabet _Alphabet;
     private AtomicInteger _Counter;
+    private ArrayList<String> _ResultStringList;
+    private int _Id;
 
-    public CalculatorThread(int maxLength, Alphabet alphabet, ArrayList<String> wordList, AtomicInteger counter) {
+    public CalculatorThread(int maxLength, Alphabet alphabet, ArrayList<String> wordList, AtomicInteger counter, int id) {
 
         _MaxLength = maxLength;
         _WordList = wordList;
         _Alphabet = alphabet;
         _Counter = counter;
+        _ResultStringList = new ArrayList<String>();
+        _Id = id;
     }
 
     @Override
@@ -35,24 +39,14 @@ public class CalculatorThread extends Thread {
             calculate(word, _Alphabet);
         }
 
-        long timeEnd = System.currentTimeMillis();
-        long resultTime = timeEnd - timeStart;
-
-        String outputString = "";
-        outputString = outputString.concat("Thread: " + Thread.currentThread().getName());
-        outputString = outputString.concat("\nThe Calculation took: " + resultTime / 1000 + "s (" + resultTime + "ms)");
-
-        String filePath = new File("").getAbsolutePath();
-        filePath = filePath.concat("/times.txt");
-
-        writeTimeToFile(filePath, outputString);
-
+        TimeTakingHelper.takeTime(_ResultStringList, timeStart, _Id);
     }
 
     private void calculate(String word, Alphabet alphabet) {
 
         if (word.length() >= _MaxLength) {
-            System.out.println(word + " " + Thread.currentThread() + "\r");
+            _ResultStringList.add(word);
+
             return;
         }
 
@@ -60,23 +54,6 @@ public class CalculatorThread extends Thread {
 
             _Word = word + letter;
             calculate(_Word, alphabet);
-        }
-    }
-
-    private static void writeTimeToFile(String fileName, String result) {
-
-        BufferedWriter output = null;
-
-        File file = new File(fileName);
-
-        try {
-            output = new BufferedWriter(new FileWriter(file, true));
-
-            output.write("\n" + result);
-
-            output.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 }

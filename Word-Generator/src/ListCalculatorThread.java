@@ -36,41 +36,14 @@ public class ListCalculatorThread extends Thread {
             calculate(word, _Alphabet);
         }
 
-        // In Zeitmessung wird einbezogen:
-        // Das Schreiben der Werte in die Datei
-        String resultFilePath = new File("").getAbsolutePath();
-        resultFilePath = resultFilePath.concat("/result" + _Id + ".txt");
+        TimeTakingHelper.takeTime(_ResultStringList, timeStart, _Id);
 
-        FileWriterHelper fwh = new FileWriterHelper();
-
-        long timeCalculationEnd = System.currentTimeMillis();
-        long resultTimeCalculationEnd = timeCalculationEnd - timeStart;
-
-
-        fwh.writeResultToFile(resultFilePath, _ResultStringList, false);
-
-        long timeTotalEnd = System.currentTimeMillis();
-        long resultTimeTotalEnd = timeTotalEnd - timeStart;
-
-        String outputString = "";
-        outputString = outputString.concat("The whole Operation including writing to Filesystem took in " + Thread.currentThread().getName() + ": " + resultTimeTotalEnd / 1000 + "s (" + resultTimeTotalEnd + "ms)\n");
-
-        String timesFilePath = new File("").getAbsolutePath();
-        timesFilePath = timesFilePath.concat("/times.txt");
-
-        System.out.println(outputString);
-
-        fwh.writeTimeToFile(timesFilePath, "Calculation without Writing to the Filesystem in " + Thread.currentThread().getName() + " took: " + resultTimeCalculationEnd + "ms", true);
-
-        fwh.writeTimeToFile(timesFilePath, outputString, true);
+        destructor();
     }
 
     private void calculate(String word, Alphabet alphabet) {
 
         if (word.length() >= _MaxLength) {
-            //System.out.println(word + " " + Thread.currentThread() + "\r");
-
-            //_ResultString = _ResultString.concat(word + "\n");
 
             _ResultStringList.add(word);
 
@@ -84,21 +57,11 @@ public class ListCalculatorThread extends Thread {
         }
     }
 
-    private static void writeTimeToFile(String fileName, String result, boolean append) {
+    private void destructor() {
 
-        BufferedWriter output = null;
-
-        File file = new File(fileName);
-
-        try {
-            output = new BufferedWriter(new FileWriter(file, append));
-
-            output.write("\n" + result);
-
-            output.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        _ResultStringList = null;
+        _WordList = null;
+        _Alphabet = null;
     }
 }
 

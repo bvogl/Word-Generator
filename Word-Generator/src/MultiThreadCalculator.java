@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,19 +16,19 @@ public class MultiThreadCalculator {
         _ThreadCount = threadCount;
 
         // Get Wordlist with initial Letters
-        int max = 0;
 
-        if (alphabet.Letters().size() < _ThreadCount) {
-            max = 2;
-        } else {
-            max = 1;
-        }
-
-        max = 2;
-        calculateWordsList(word, alphabet, max);
+        calculateWordsList(word, alphabet, 2);
     }
 
     public void doWorkWithSeperateLists(int maxLength, Alphabet alphabet) {
+
+        FileWriterHelper fwh = new FileWriterHelper();
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.concat("/times.txt");
+
+        String text = "\nNew Round using " + _ThreadCount + " Threads and seperate Lists";
+        fwh.writeTimeToFile(filePath, text, true);
+        System.out.println(text);
 
         int partialListSize = _WordsList.size() / _ThreadCount;
         int tmp = 0;
@@ -60,44 +61,64 @@ public class MultiThreadCalculator {
 
             ArrayList<List<String>> newLIst = new ArrayList<List<String>>();
 
-                for (int i = 0; i < lists.size(); i++) {
+            for (int i = 0; i < lists.size(); i++) {
 
-                    ArrayList lst = new ArrayList(lists.get(i));
+                ArrayList lst = new ArrayList(lists.get(i));
 
-                    try {
+                try {
 
-                        lst.add(restList.get(i));
-                    } catch (IndexOutOfBoundsException ex) {
-                        //ex.printStackTrace();
-                    } finally {
-                        //lists.get(i).add(restList.get(i));
-                        newLIst.add(lst);
-                    }
-                }
-
-                int count = 0;
-                for (List<String> list : newLIst
-                        ) {
-
-                    ListCalculatorThread t = new ListCalculatorThread(maxLength, alphabet, list, count);
-                    t.start();
-                    System.out.println("Thread: " + count + " started");
-                    count++;
+                    lst.add(restList.get(i));
+                } catch (IndexOutOfBoundsException ex) {
+                    //ex.printStackTrace();
+                } finally {
+                    //lists.get(i).add(restList.get(i));
+                    newLIst.add(lst);
                 }
             }
 
+            ArrayList<Thread> threadList = new ArrayList<>();
+
+            int count = 0;
+            for (List<String> list : newLIst
+                    ) {
+
+                ListCalculatorThread t = new ListCalculatorThread(maxLength, alphabet, list, count);
+                t.start();
+                System.out.println("Thread: " + count + " started");
+                count++;
+                threadList.add(t);
+            }
+
+            System.out.println("========================================");
+
+            // getting total Waiting time
+            getTotalWaitingTime(threadList);
+        }
     }
 
     public void doWorkWithThreadsafeInteger(int maxLength, Alphabet alphabet) {
 
+        FileWriterHelper fwh = new FileWriterHelper();
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.concat("/times.txt");
+
+        String text = "\nNew Round using " + _ThreadCount + " Threads and threadsafe integer";
+        fwh.writeTimeToFile(filePath, text, true);
+        System.out.println(text);
+
         _Counter = new AtomicInteger();
         // Initiate and Start Threads
 
+        ArrayList<Thread> threadList = new ArrayList<>();
+
         for (int i = 0; i < _ThreadCount; i++) {
 
-            CalculatorThread t = new CalculatorThread(maxLength, alphabet, _WordsList, _Counter);
+            CalculatorThread t = new CalculatorThread(maxLength, alphabet, _WordsList, _Counter, i + _ThreadCount);
             t.start();
+            threadList.add(t);
         }
+
+        getTotalWaitingTime(threadList);
     }
 
     private void calculateWordsList(String word, Alphabet alphabet, int maxLength) {
@@ -113,5 +134,31 @@ public class MultiThreadCalculator {
             _Word = word + letter;
             calculateWordsList(_Word, alphabet, maxLength);
         }
+    }
+
+    private void getTotalWaitingTime(ArrayList<Thread> threadList) {
+
+        FileWriterHelper fwh = new FileWriterHelper();
+
+        long timeStart = System.currentTimeMillis();
+
+        try {
+
+            for (int i = 0; i < threadList.size(); i++) {
+                threadList.get(i).join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        long timeFinished = System.currentTimeMillis();
+
+        String text = "Total time: \t\t\t\t\t" + (timeFinished - timeStart) + "ms";
+
+        String timesFilePath = new File("").getAbsolutePath();
+        timesFilePath = timesFilePath.concat("/times.txt");
+
+        System.out.println(text);
+        fwh.writeTimeToFile(timesFilePath, text, true);
     }
 }
