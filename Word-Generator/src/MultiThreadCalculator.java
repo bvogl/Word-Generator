@@ -17,7 +17,9 @@ public class MultiThreadCalculator {
 
         // Get Wordlist with initial Letters
 
-        calculateWordsList(word, alphabet, 2);
+        int max = 2;
+
+        calculateWordsList(word, alphabet, max);
     }
 
     public void doWorkWithSeperateLists(int maxLength, Alphabet alphabet) {
@@ -79,6 +81,9 @@ public class MultiThreadCalculator {
             ArrayList<Thread> threadList = new ArrayList<>();
 
             int count = 0;
+
+            long timeStart = System.currentTimeMillis();
+
             for (List<String> list : newLIst
                     ) {
 
@@ -92,7 +97,7 @@ public class MultiThreadCalculator {
             System.out.println("========================================");
 
             // getting total Waiting time
-            getTotalWaitingTime(threadList);
+            getTotalWaitingTime(threadList, timeStart);
         }
     }
 
@@ -111,14 +116,16 @@ public class MultiThreadCalculator {
 
         ArrayList<Thread> threadList = new ArrayList<>();
 
+        long timeStart = System.currentTimeMillis();
+
         for (int i = 0; i < _ThreadCount; i++) {
 
-            CalculatorThread t = new CalculatorThread(maxLength, alphabet, _WordsList, _Counter, i + _ThreadCount);
+            CalculatorThread t = new CalculatorThread(maxLength, alphabet, _WordsList, _Counter, i);
             t.start();
             threadList.add(t);
         }
 
-        getTotalWaitingTime(threadList);
+        getTotalWaitingTime(threadList, timeStart);
     }
 
     private void calculateWordsList(String word, Alphabet alphabet, int maxLength) {
@@ -136,11 +143,9 @@ public class MultiThreadCalculator {
         }
     }
 
-    private void getTotalWaitingTime(ArrayList<Thread> threadList) {
+    private void getTotalWaitingTime(ArrayList<Thread> threadList, long timeStart) {
 
         FileWriterHelper fwh = new FileWriterHelper();
-
-        long timeStart = System.currentTimeMillis();
 
         try {
 
@@ -153,7 +158,7 @@ public class MultiThreadCalculator {
 
         long timeFinished = System.currentTimeMillis();
 
-        String text = "Total time: \t\t\t\t\t" + (timeFinished - timeStart) + "ms";
+        String text = "\nTotal time: \t\t\t" + (timeFinished - timeStart) + "ms";
 
         String timesFilePath = new File("").getAbsolutePath();
         timesFilePath = timesFilePath.concat("/times.txt");

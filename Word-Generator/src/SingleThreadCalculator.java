@@ -27,10 +27,8 @@ public class SingleThreadCalculator {
 
         if (word.length() >= _MaxLength) {
 
-            //System.out.print(word + "\r");
-            //System.out.println(word + Thread.currentThread() + "\r");
-
-            ResultStringList.add(word);
+            //ResultStringList.add(word);
+            //System.out.print("\r" + word);
 
             return;
         }

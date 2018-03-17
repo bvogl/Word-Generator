@@ -63,7 +63,7 @@ public class Launcher {
             MultiThreadCalculator multiCalc = new MultiThreadCalculator(threadsCount, _Word, _Alphabet);
 
             if (args[2].equals("single")) {
-                SingleThread();
+                SingleThread(threadsCount);
             } else if (args[2].equals("list")) {
                 multiCalc.doWorkWithSeperateLists(_MaxLength, _Alphabet);
             } else if (args[2].equals("int")) {
@@ -72,7 +72,7 @@ public class Launcher {
         }
     }
 
-    private static void SingleThread() {
+    private static void SingleThread(int threadCount) {
 
         // set up the environment
         SingleThreadCalculator calculator = new SingleThreadCalculator(_MaxLength);
@@ -112,8 +112,10 @@ public class Launcher {
 
         fwh.writeTimeToFile(timeFilePath, text, true);
 
-        text = "Writing Time: \t\t\t\t\t" + (totalResultTime - resultTime) + "ms" +
+        text = "Writing Time: \t\t\t" + (totalResultTime - resultTime) + "ms" +
                 "\n========================================";
+
+        text = text.concat("\nTotal time: \t\t\t" + totalResultTime + "ms");
 
         System.out.println(text);
         fwh.writeTimeToFile(timeFilePath, text, true);

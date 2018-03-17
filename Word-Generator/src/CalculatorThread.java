@@ -1,6 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,6 +24,7 @@ public class CalculatorThread extends Thread {
     @Override
     public void run() {
         super.run();
+        TimeTakingHelper tth = new TimeTakingHelper();
 
         long timeStart = System.currentTimeMillis();
 
@@ -38,14 +36,15 @@ public class CalculatorThread extends Thread {
 
             calculate(word, _Alphabet);
         }
-
-        TimeTakingHelper.takeTime(_ResultStringList, timeStart, _Id);
+        //tth.writeToFileAndTakeTimes(_ResultStringList, timeStart, _Id);
     }
 
     private void calculate(String word, Alphabet alphabet) {
 
         if (word.length() >= _MaxLength) {
-            _ResultStringList.add(word);
+
+            //System.out.print("\r" + word);
+            //_ResultStringList.add(word);
 
             return;
         }
